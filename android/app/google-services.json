@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "381585323049",
+    "project_id": "plantin-test-task",
+    "storage_bucket": "plantin-test-task.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381585323049:android:7605998d0cf713359ad838",
+        "android_client_info": {
+          "package_name": "com.example.plantin_test_task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXzamdc9Oi2UT-KEWgC-l7Oh5Q3qZ2DJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
