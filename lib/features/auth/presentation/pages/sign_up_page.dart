@@ -1,15 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:plantin_test_task/common/widgets/common_filled_button.dart';
 import 'package:plantin_test_task/common/widgets/common_text_field.dart';
+import 'package:plantin_test_task/features/auth/data/services/auth_service.dart';
+import 'package:plantin_test_task/features/auth/presentation/pages/sign_in_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
+
+  static const String path = 'sign_up';
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -79,7 +86,20 @@ class _SignUpPageState extends State<SignUpPage> {
                   Expanded(
                     child: CommonFilledButton(
                       onPressed: () {
-                        _formKey.currentState!.validate();
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            AuthService().signUpWithEmailAndPassword(
+                              _emailController.text,
+                              _passwordController.text,
+                            );
+                          } on FirebaseAuthException catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Authentication error: $e'),
+                              ),
+                            );
+                          }
+                        }
                       },
                       text: 'Sign up',
                     ),
@@ -91,8 +111,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   Expanded(
                     child: CommonFilledButton(
-                      onPressed: () {},
-                      text: 'Sign in',
+                      onPressed: () {
+                        context.goNamed('${SignInPage.path}');
+                      },
+                      text: 'Go to Sign in',
                     ),
                   ),
                 ],
@@ -102,5 +124,13 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 }
