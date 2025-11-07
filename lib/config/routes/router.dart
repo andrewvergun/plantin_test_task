@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:plantin_test_task/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:plantin_test_task/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:plantin_test_task/features/home_page/presentation/pages/home_page.dart';
+import 'package:plantin_test_task/features/home_page/presentation/pages/view_image_page.dart';
 import 'package:plantin_test_task/features/profile_page/presentation/pages/profile_page.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -13,7 +14,7 @@ class ListenableFromStream extends ChangeNotifier {
   ListenableFromStream(Stream<dynamic> stream) {
     notifyListeners();
     _subscription = stream.asBroadcastStream().listen(
-          (dynamic _) => notifyListeners(),
+      (dynamic _) => notifyListeners(),
     );
   }
 
@@ -28,7 +29,9 @@ class ListenableFromStream extends ChangeNotifier {
 
 final GoRouter router = GoRouter(
   initialLocation: '/${SignUpPage.path}',
-  refreshListenable: ListenableFromStream(FirebaseAuth.instance.authStateChanges()),
+  refreshListenable: ListenableFromStream(
+    FirebaseAuth.instance.authStateChanges(),
+  ),
   redirect: (BuildContext context, GoRouterState state) {
     final user = FirebaseAuth.instance.currentUser;
     final bool onSignUp = state.matchedLocation == '/${SignUpPage.path}';
@@ -36,11 +39,10 @@ final GoRouter router = GoRouter(
 
     if (user != null && (onSignUp || onSignIn)) {
       return '/${HomePage.path}';
-    } else if(user == null && !(onSignUp || onSignIn)) {
+    } else if (user == null && !(onSignUp || onSignIn)) {
       return '/${SignUpPage.path}';
     }
     return null;
-
   },
   routes: [
     GoRoute(
@@ -57,6 +59,18 @@ final GoRouter router = GoRouter(
         return SignInPage();
       },
     ),
+    GoRoute(
+      path: '/${ViewImagePage.path}/:index',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return ViewImagePage(
+          images: extra?['images'] ?? [],
+          initialIndex: extra?['initialIndex'] ?? 0,
+        );
+      },
+    ),
+
+
     ShellRoute(
       builder: (BuildContext context, GoRouterState state, Widget child) {
         String location = state.uri.toString();
@@ -94,11 +108,11 @@ final GoRouter router = GoRouter(
       },
       routes: [
         GoRoute(
-            path:'/${HomePage.path}',
-            name: HomePage.path,
-            builder: (BuildContext context, GoRouterState state) {
-              return HomePage();
-            },
+          path: '/${HomePage.path}',
+          name: HomePage.path,
+          builder: (BuildContext context, GoRouterState state) {
+            return HomePage();
+          },
         ),
         GoRoute(
           path: '/${ProfilePage.path}',

@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import '../pages/view_image_page.dart';
 
 class GalleryWidget extends StatelessWidget {
   const GalleryWidget({
@@ -19,7 +22,6 @@ class GalleryWidget extends StatelessWidget {
       onEndOfPage: onEndOfPage,
       scrollOffset: 100,
       child: GridView.builder(
-        padding: const EdgeInsets.all(8),
         itemCount: images.length + (isLoading ? 1 : 0),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
@@ -27,7 +29,6 @@ class GalleryWidget extends StatelessWidget {
           mainAxisSpacing: 4,
         ),
         itemBuilder: (BuildContext context, int index) {
-          // Show loading indicator at the end
           if (index == images.length) {
             return const Center(
               child: Padding(
@@ -37,28 +38,28 @@ class GalleryWidget extends StatelessWidget {
             );
           }
 
+          final image = images[index]['download_url'];
+          final isLocal = image.toString().startsWith('/');
+
           return ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              images[index]['download_url'],
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
+            child: GestureDetector(
+              onTap: () {
+                context.push(
+                  '/${ViewImagePage.path}/$index',
+                  extra: {'images': images, 'initialIndex': index},
                 );
               },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
+              child: Image(
+                image: isLocal
+                    ? FileImage(File(image))
+                    : NetworkImage(image) as ImageProvider,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
                   color: Colors.grey[300],
                   child: const Icon(Icons.error),
-                );
-              },
+                ),
+              ),
             ),
           );
         },

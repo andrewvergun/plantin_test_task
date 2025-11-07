@@ -28,9 +28,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadImages() async {
     if (_isLoading || !_hasMore) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       final newImages = await _galleryService.getImages(page: _currentPage);
@@ -39,23 +37,34 @@ class _HomePageState extends State<HomePage> {
         if (newImages.isEmpty) {
           _hasMore = false;
         } else {
+          _images.clear();
           _images.addAll(newImages);
           _currentPage++;
         }
-        _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
       print('Error loading images: $e');
+    } finally {
+      setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _addPhoto() async {
+    await _galleryService.pickAndAddImage();
+    final updatedImages = await _galleryService.getImages(page: 1);
+    setState(() => _images
+      ..clear()
+      ..addAll(updatedImages));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: CommonFilledButton(onPressed: () {}, icon: Icons.add_a_photo, text: 'Add photo'),
+      floatingActionButton: CommonFilledButton(
+        onPressed: _addPhoto,
+        icon: Icons.add_a_photo,
+        text: 'Add photo',
+      ),
       body: _images.isEmpty && _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _images.isEmpty
