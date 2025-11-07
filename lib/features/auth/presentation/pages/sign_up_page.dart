@@ -112,7 +112,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Expanded(
                     child: CommonFilledButton(
                       onPressed: () {
-                        context.goNamed('${SignInPage.path}');
+                        context.goNamed(SignInPage.path);
                       },
                       text: 'Go to Sign in',
                     ),
