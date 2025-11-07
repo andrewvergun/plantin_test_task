@@ -25,7 +25,7 @@ class _CommonFilledButtonState extends State<CommonFilledButton> {
       style: FilledButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         elevation: 0,
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+        padding: EdgeInsets.symmetric(vertical: 18, horizontal: 18),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
