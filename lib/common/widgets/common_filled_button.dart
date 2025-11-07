@@ -21,10 +21,11 @@ class _CommonFilledButtonState extends State<CommonFilledButton> {
   Widget build(BuildContext context) {
     return FilledButton(
       onPressed: widget.onPressed,
+
       style: FilledButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         elevation: 0,
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 32),
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
